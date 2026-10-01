@@ -15,6 +15,7 @@
   <textarea id="memo" placeholder="ここにメモを入力..."></textarea><br>
   <button onclick="save()">保存</button>
   <button onclick="clearMemo()">リセット</button>
+  <button onclick="exportMemo()">書き出し</button>
 
   <script>
     const memo = document.getElementById("memo");
@@ -28,6 +29,22 @@
     function clearMemo() {
       memo.value = "";
       localStorage.removeItem("memo");
+    }
+
+    function exportMemo() {
+      if (!memo.value) {
+        alert("メモが空です");
+        return;
+      }
+      const d = new Date();
+      const pad = n => String(n).padStart(2, "0");
+      const stamp = `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}`;
+      const blob = new Blob([memo.value], { type: "text/plain;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `memo-${stamp}.txt`;
+      a.click();
+      URL.revokeObjectURL(a.href);
     }
   </script>
 </body>
